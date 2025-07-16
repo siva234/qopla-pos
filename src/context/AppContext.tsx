@@ -1,16 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode, useMemo } from 'react';
 import type {
-    Product,
-    AddonGroup,
-    SelectedModifications,
-    SelectionHandler,
-    SelectedAddons,
-    AddonIncrementHandler,
-    AddonDecrementHandler,
+  Product,
+  AddonGroup,
+  SelectedModifications,
+  SelectionHandler,
+  SelectedAddons,
+  AddonIncrementHandler,
+  AddonDecrementHandler,
 } from '../types';
 
 import productData from '../data/product.json';
 import addonsData from '../data/addons.json';
+
+import { calculateTotalPrice } from '../utils/calculations';
 
 interface AppContextType {
   product: Product | null;
@@ -33,13 +35,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [addonGroups, setAddonGroups] = useState<AddonGroup[]>([]);
   const [selectedModifications, setSelectedModifications] = useState<SelectedModifications>({});
-
   const [selectedAddons, setSelectedAddons] = useState<SelectedAddons>({});
 
   useEffect(() => {
     const currentProduct = productData as Product;
     setProduct(currentProduct);
     setAddonGroups(addonsData as AddonGroup[]);
+
     const initialSelections: SelectedModifications = {};
     if (currentProduct.modifications) {
       for (const type in currentProduct.modifications) {
@@ -55,12 +57,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const handleModificationSelect: SelectionHandler = (modificationType, optionName) => {
     setSelectedModifications((prev) => ({ ...prev, [modificationType]: optionName }));
   };
-  
-  // --- ADDON LOGIC ---
+
   const getAddonTotalForGroup = (group: AddonGroup): number => {
     return group.addons.reduce((total, currentAddon) => {
-      const count = selectedAddons[currentAddon.addon.name] || 0;
-      return total + count;
+      return total + (selectedAddons[currentAddon.addon.name] || 0);
     }, 0);
   };
 
@@ -73,13 +73,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       console.warn("Addon limit reached.");
       return;
     }
-
     setSelectedAddons(prev => ({ ...prev, [addonName]: currentCount + 1 }));
   };
 
   const decrementAddon: AddonDecrementHandler = (addonName) => {
     const currentCount = selectedAddons[addonName];
     if (!currentCount) return;
+
     if (currentCount > 1) {
       setSelectedAddons(prev => ({ ...prev, [addonName]: currentCount - 1 }));
     } else {
@@ -88,39 +88,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   };
 
-   const totalPrice = useMemo(() => {
-    if (!product) return 0;
-
-    let total = product.price;
-
-    if (product.modifications) {
-      for (const type in selectedModifications) {
-        const selectedOptionName = selectedModifications[type];
-        const modificationOptions = product.modifications[type];
-        const selectedOption = modificationOptions?.find(opt => opt.name === selectedOptionName);
-        if (selectedOption) {
-          total += selectedOption.addonPrice;
-        }
-      }
+  const totalPrice = useMemo(() => {
+    if (!product) {
+      return 0;
     }
-
-    for (const addonName in selectedAddons) {
-      const quantity = selectedAddons[addonName];
-      const addon = addonGroups
-        .flatMap(group => group.addons)
-        .find(a => a.addon.name === addonName);
-      
-      if (addon) {
-        total += parseFloat(addon.addon.price) * quantity;
-      }
-    }
-
-    return total;
+    return calculateTotalPrice({
+      product,
+      selectedModifications,
+      selectedAddons,
+      addonGroups,
+    });
   }, [product, selectedModifications, selectedAddons, addonGroups]);
 
-
-
-  // Memoize the context value to prevent unnecessary re-renders of consumers
   const value = useMemo(() => ({
     product,
     addonGroups,
