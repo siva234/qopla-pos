@@ -1,0 +1,16 @@
+{
+  "id": "a_very_unique_soda_id",
+  "name": "Soda",
+  "price": 30,
+  "modifications": {
+    "sizes": [
+      { "name": "Normal", "addonPrice": 0 },
+      { "name": "Extra large", "addonPrice": 15 }
+    ],
+    "flavours": [
+      { "name": "Coca Cola", "addonPrice": 0 },
+      { "name": "Fanta", "addonPrice": 0 },
+      { "name": "Sprite", "addonPrice": 0 }
+    ]
+  }
+}
