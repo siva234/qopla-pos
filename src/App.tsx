@@ -5,8 +5,19 @@ import { useAppContext } from './context/AppContext';
 import { PriceDisplay } from './components/PriceDisplay';
 
 const App: React.FC = () => {
-  const { product, selectedModifications, selectedAddons, handleModificationSelect } = useAppContext();
-
+  const { product, error, selectedModifications, selectedAddons, handleModificationSelect } = useAppContext();
+  
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <div className="rounded-lg bg-white p-8 text-center shadow-lg">
+          <h1 className="text-xl font-bold text-red-700">Failed to Load Application</h1>
+          <p className="mt-2 text-slate-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+  
   if (!product) {
     return <div className="p-8">Loading Product...</div>;
   }

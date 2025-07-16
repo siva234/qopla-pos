@@ -23,6 +23,8 @@ interface AppContextType {
   handleModificationSelect: SelectionHandler;
   incrementAddon: AddonIncrementHandler;
   decrementAddon: AddonDecrementHandler;
+  error: string | null;
+  
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -36,22 +38,35 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [addonGroups, setAddonGroups] = useState<AddonGroup[]>([]);
   const [selectedModifications, setSelectedModifications] = useState<SelectedModifications>({});
   const [selectedAddons, setSelectedAddons] = useState<SelectedAddons>({});
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const currentProduct = productData as Product;
-    setProduct(currentProduct);
-    setAddonGroups(addonsData as AddonGroup[]);
+    try {
+       if (!productData || !productData.id || typeof productData.price !== 'number') {
+        throw new Error("Product data is invalid or missing.");
+      }
+      if (!Array.isArray(addonsData)) {
+        throw new Error("Addons data is invalid or missing.");
+      }
+      
+      const currentProduct = productData as Product;
+      setProduct(currentProduct);
+      setAddonGroups(addonsData as AddonGroup[]);
 
-    const initialSelections: SelectedModifications = {};
-    if (currentProduct.modifications) {
-      for (const type in currentProduct.modifications) {
-        const options = currentProduct.modifications[type];
-        if (options?.length > 0) {
-          initialSelections[type] = options[0].name;
+      const initialSelections: SelectedModifications = {};
+      if (currentProduct.modifications) {
+        for (const type in currentProduct.modifications) {
+          const options = currentProduct.modifications[type];
+          if (options?.length > 0) {
+            initialSelections[type] = options[0].name;
+          }
         }
       }
-    }
-    setSelectedModifications(initialSelections);
+      setSelectedModifications(initialSelections);
+  } catch (e: any) {
+    console.error("Failed to initialize app state: ", e);
+    setError(e.message || "An unknown error has occured during setup");
+  }
   }, []);
 
   const handleModificationSelect: SelectionHandler = (modificationType, optionName) => {
@@ -109,6 +124,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     handleModificationSelect,
     incrementAddon,
     decrementAddon,
+    error,
   }), [product, addonGroups, selectedModifications, selectedAddons, totalPrice]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

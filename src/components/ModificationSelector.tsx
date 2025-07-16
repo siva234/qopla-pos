@@ -33,7 +33,7 @@ export const ModificationSelector: React.FC<ModificationSelectorProps> = ({
 
   return (
     <div className="rounded-lg border border-slate-200 bg-slate-50">
-      <div className="flex cursor-pointer items-center justify-between p-4"
+      <div className="border border-slate-300 flex cursor-pointer items-center justify-between p-4"
         onClick={() => setIsCollapsed(!isCollapsed)}>
         <div className="flex items-center gap-3">
           <ChevronIcon isCollapsed={isCollapsed} />

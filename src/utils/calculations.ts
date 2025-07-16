@@ -32,7 +32,8 @@ export function calculateTotalPrice({
     const quantity = selectedAddons[addonName];
     const addon = allAddons.find(a => a.addon.name === addonName);
     if (addon) {
-      total += parseFloat(addon.addon.price) * quantity;
+        const price = parseFloat(addon.addon.price) || 0;
+        total += price * quantity;
     }
   }
 
