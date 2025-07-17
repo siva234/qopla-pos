@@ -121,10 +121,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     selectedModifications,
     selectedAddons,
     totalPrice,
+    error,
     handleModificationSelect,
     incrementAddon,
     decrementAddon,
-    error,
   }), [product, addonGroups, selectedModifications, selectedAddons, totalPrice]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

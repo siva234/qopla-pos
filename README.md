@@ -1,69 +1,50 @@
-# React + TypeScript + Vite
+# POS Modification & Addon UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a modern, unified user interface for selecting product modifications and addons in a Point of Sale (POS) system. It was built as a solution aiming to replace a disjointed, multi-step process with a single, intuitive screen. The goal is to improve the speed and experience for cashiers while creating opportunities for upselling.
 
-Currently, two official plugins are available:
+The application is built with **React**, **TypeScript**, and **Vite**, and styled with **Tailwind CSS V4**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Core Features
 
-## Expanding the ESLint configuration
+-   **Unified Interface**: Modifications (e.g., size, flavor) and addons (e.g., extra toppings) are managed on a single, clean screen.
+-   **Dynamic Modification Selection**: Users can select one option per modification type (e.g., "Extra large" for size). Selections can be changed at any time.
+-   **Addon Management**: Users can increment and decrement addons. The logic correctly enforces limits at both the individual addon level and the group level.
+-   **Real-time Price Calculation**: The total price is instantly updated as the user makes selections, reflecting the product's base price, modification costs, and addon costs.
+-   **Collapsible Sections**: Both the modifications and addons sections can be collapsed to reduce visual clutter, showing a quick summary of the selections made within.
+-   **Responsive Design**: The UI is fully responsive and works seamlessly on various screen aspect ratios.
+-   **Error Handling**: The application includes error handling to gracefully manage issues like invalid data or rendering errors, preventing crashes.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Technical Highlights & Architecture
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+This project was built with a focus on creating a clean, scalable, and maintainable codebase.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+-   **State Management**: Centralized state management is handled using **React's Context API**. This avoids prop drilling and separates the application's business logic (state updates, price calculations, limit enforcement) from the presentational components.
+-   **Component-Based Architecture**: The UI is broken down into small, reusable, and self-contained components (`ModificationSelector`, `AddonSelector`, `PriceDisplay`, etc.).
+-   **Styling**: All styling is done with **Tailwind CSS**, eliminating the need for separate CSS files.
+-   **Error Handling**: The application is wrapped in a custom **Error Boundary** component to catch any runtime rendering errors and display a fallback UI.
+-   **Testable Utilities**: Critical business logic, such as the price calculation, has been extracted into pure, testable utility functions.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Running
+- **See the Project directly**: Use this URL to directly access the demo deployed onto Vercel [link|https://qopla-pos-sdpo.vercel.app/].
+- **Running Locally**: Run the following scripts in the same order to see a demo on your localhost
+
+```bash
+npm install
+
+npm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Testing
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+A targeted testing strategy was implemented to ensure the most critical parts of the application are stable and reliable.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The project uses **Vitest** for the test runner and **React Testing Library** for rendering components and simulating user interactions.
+
+-   **Unit Tests**: The core price calculation logic is covered by unit tests to verify its correctness against various combinations of inputs.
+-   **Integration Tests**: The `AddonSelector` component has integration tests that simulate user clicks to ensure that addon limits (both item and group) are correctly enforced in the UI.
+
+To run the tests, use the following command:
+
+```bash
+npm test
 ```

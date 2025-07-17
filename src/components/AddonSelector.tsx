@@ -54,15 +54,19 @@ export const AddonSelector: React.FC = () => {
           <h2 className="select-none text-xl font-bold text-slate-800">Add-ons</h2>
         </div>
         {(summary.additions > 0 || summary.removals > 0) && (
-          <div className="flex gap-4 font-semibold">            
+          <div className="flex gap-4 font-semibold items-center">            
             {summary.extraPrice > 0 && (
-              <span className="font-semibold text-blue-600">+{summary.extraPrice} kr, </span>
+              <span className="font-semibold text-blue-600">+{summary.extraPrice} kr </span>
             )}
             {summary.additions > 0 && (
-              <span className="rounded-full p-1 bg-green-300 text-green-600">{summary.additions}</span>
+              <div className='flex rounded-full bg-green-300 w-7 h-7 items-center justify-center'>
+              <span className="text-green-600">{summary.additions}</span>
+              </div>
             )}
             {summary.removals > 0 && (
-              <span className="rounded-full p-1 bg-red-300 text-red-600">{summary.removals}</span>
+              <div className='flex rounded-full bg-red-300 w-7 h-7 items-center justify-center'>
+              <span className="text-red-600">{summary.removals}</span>
+              </div>
             )}
           </div>
         )}
