@@ -83,8 +83,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const addonName = groupAddon.addon.name;
     const currentCount = selectedAddons[addonName] || 0;
     const groupTotal = getAddonTotalForGroup(group);
+    const isItemLimitReached = currentCount >= groupAddon.limit;
+    const isGroupLimitReached = groupTotal >= group.limit;
 
-    if (currentCount >= groupAddon.limit || groupTotal >= group.limit) {
+    if (isItemLimitReached || (isGroupLimitReached && currentCount === 0)) {
       console.warn("Addon limit reached.");
       return;
     }

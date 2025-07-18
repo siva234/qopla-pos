@@ -59,8 +59,8 @@ export const AddonSelector: React.FC = () => {
               <span className="font-semibold text-blue-600">+{summary.extraPrice} kr </span>
             )}
             {summary.additions > 0 && (
-              <div className='flex rounded-full bg-green-300 w-7 h-7 items-center justify-center'>
-              <span className="text-green-600">{summary.additions}</span>
+              <div className='flex rounded-full bg-blue-300 w-7 h-7 items-center justify-center'>
+              <span className="text-blue-600">{summary.additions}</span>
               </div>
             )}
             {summary.removals > 0 && (
@@ -86,21 +86,31 @@ export const AddonSelector: React.FC = () => {
                   {group.addons.sort((a, b) => a.sortOrder - b.sortOrder).map((groupAddon) => {
                     const addon = groupAddon.addon;
                     const count = selectedAddons[addon.name] || 0;
-                    const isIncrementDisabled = count >= groupAddon.limit || groupTotal >= group.limit;
+                    const isIncrementDisabled = count >= groupAddon.limit || (groupTotal >= group.limit && count === 0);
+                    const isRemoveAddon = group.name && group.name.toLowerCase().includes('remove');
+                    const baseButtonClasses = "flex h-8 w-8 items-center justify-center rounded-full text-lg font-bold text-white";
+                    const incrementStateButtonClasses = isRemoveAddon
+                      ? "bg-red-500 transition hover:bg-red-600" 
+                      : "bg-blue-500 transition hover:bg-blue-600";
+                    const decrementStateButtonClasses = !isRemoveAddon
+                    ? "bg-red-500 transition hover:bg-red-600" 
+                    : "bg-blue-500 transition hover:bg-blue-600";
+                    const disableButtonClasses = "disabled:bg-slate-300 disabled:cursor-not-allowed";
+                    
                     return (
                        <div key={addon.name} className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm" onClick={(e) => e.stopPropagation()}>
                         <div>
-                          <p className="font-medium text-slate-800">{addon.name}</p>
+                          <p className="font-medium text-slate-800">{isRemoveAddon? "Remove "+addon.name:""+addon.name}</p>
                           {parseFloat(addon.price) > 0 && (<p className="text-sm text-slate-500">+{addon.price} kr</p>)}
                         </div>
                         <div className="flex items-center gap-2">
                           {count > 0 && (
-                            <button onClick={() => decrementAddon(addon.name)} className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-lg font-bold text-white transition hover:bg-slate-300">−</button>
+                            <button onClick={() => decrementAddon(addon.name)} className={`${baseButtonClasses} ${decrementStateButtonClasses}`}>−</button>
                           )}
                             <span className="w-8 text-center text-lg font-bold text-slate-800">
                                 {count}
                             </span>
-                          <button onClick={() => incrementAddon(groupAddon, group)} disabled={isIncrementDisabled} className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-lg font-bold text-white transition hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-not-allowed">+</button>
+                          <button onClick={() => incrementAddon(groupAddon, group)} disabled={isIncrementDisabled} className={`${baseButtonClasses} ${incrementStateButtonClasses} ${disableButtonClasses}`}>+</button>
                         </div>
                       </div>
                     );

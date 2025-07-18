@@ -52,7 +52,7 @@ export const ModificationSelector: React.FC<ModificationSelectorProps> = ({
                   const isSelected = selectedModifications[type] === option.name;
                   const baseClasses = "flex flex-col items-center justify-center rounded-md border-2 px-5 py-3 text-center transition-colors duration-200 min-w-[110px] cursor-pointer";
                   const stateClasses = isSelected
-                    ? "border-blue-500 bg-blue-500 text-blue-500 font-semibold"
+                    ? "border-blue-500 bg-blue-500 text-white font-semibold"
                     : "border-slate-300 bg-white hover:border-blue-500 hover:text-blue-500";
                   
                   return (

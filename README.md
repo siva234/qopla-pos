@@ -21,7 +21,7 @@ This project was built with a focus on creating a clean, scalable, and maintaina
 ```bash
 npm install
 
-npm dev
+npm run dev
 ```
 
 ## Testing
